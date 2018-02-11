@@ -24,4 +24,20 @@ contract TestAdoption {
         address[16] memory adopters = adoption.getAdopters();
         Assert.equal(adopters[8], expectedAdopter, "Owner of petId 8 should be recorded");
     }
+
+    function testUserCanAbandonPet() public {
+        // make sure that the address of the adopter is set to the current contract
+        address expectedAdopter = this;
+        address adopter = adoption.adopters(8);
+        Assert.equal(adopter, expectedAdopter, "Owner of petId 8 should not be an empty address");
+        // abandon the pet
+        uint returnedId = adoption.abandon(8);
+        uint expectedPetId = 8;
+        // this should be the address at position 8 after pet abandonment
+        address expectedAddress = 0x0000000000000000000000000000000000000000;
+        // retrieve the updated adopter address
+        adopter = adoption.adopters(8);
+        Assert.equal(adopter, expectedAddress, "Owner of petId 8 should be reset to empty address");
+        Assert.equal(returnedId, expectedPetId, "Abandonment of petId 8 should be recorded");
+    }
 }
